@@ -8,6 +8,7 @@ import Mesas from './Components/screens/Mesas';
 import Categorias from './Components/screens/Categorias';
 import Productos from './Components/screens/Menu';
 import Reseñas from './Components/screens/Reseñas';
+import ReseñasScreen from "./Components/screens/Reseñas";
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function MainLayout() {
             <Route path="/mesas" element={<Mesas />} />
             <Route path="/categorias" element={<Categorias />} />
             <Route path="/productos" element={<Productos />} />
-            <Route path="/reseñas" element={<Reseñas />} />
+            <Route path="/resenas" element={<ReseñasScreen />} />
         </Routes>
       </div>
     </div>
