@@ -7,7 +7,7 @@ import Meseros from './Components/screens/Meseros';
 import Mesas from './Components/screens/Mesas';
 import Categorias from './Components/screens/Categorias';
 import Productos from './Components/screens/Menu';
-import Reseñas from './Components/screens/Resenas';
+import Reseñas from './Components/screens/Reseñas';
 
 function App() {
   return (
