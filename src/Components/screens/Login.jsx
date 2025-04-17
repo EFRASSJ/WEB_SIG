@@ -4,12 +4,13 @@ import * as yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from 'react-router-dom';
 import logoCompleto from './../img/LogoCompleto.png';
+import axios from "axios";
 
 export default function Form() {
     const navigate = useNavigate();
 
     const schema = yup.object().shape({
-        email: yup.string().required("Ingresa un email").email("Ingresa un email válido"),
+        email: yup.string().required("Ingresa un email").email("Ingresa un email valido"),
         password: yup.string().required("Ingresa una contraseña").min(4, "Mínimo 4 caracteres"),
     });
 
@@ -17,32 +18,29 @@ export default function Form() {
         resolver: yupResolver(schema),
     });
 
-    // Función para manejar el submit
     const onSubmit = async (data) => {
         try {
-            const response = await fetch('http://localhost:8080/api/empleado', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:8080/auth/login', data, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),  // Usa los datos del formulario
+                }
             });
 
-            if (!response.ok) {
-                throw new Error('Error en la conexión');
+            // Aquí ya tienes la respuesta, puedes guardar el token
+            const result = response.data;
+
+            if (result.token) {
+                localStorage.setItem("token", result.token);
+                navigate("/home");
+            } else {
+                console.warn("No se recibió token en la respuesta");
             }
 
-            const result = await response.json();
-            console.log(result);
-
-            // Redirige al usuario a otra página después de un login exitoso
-            navigate("/home");
-
         } catch (error) {
-            console.error('Error en la conexión:', error);
+            console.error("Error al iniciar sesión:", error);
+            alert("Credenciales inválidas o error del servidor");
         }
     };
-
 
     return (
         <div className="vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#9B1C31' }}>
