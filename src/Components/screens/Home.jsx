@@ -19,7 +19,7 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Le
 
 export default function AdminPanel() {
   const [ordenes, setOrdenes] = useState([]);
-  const [loading, setLoading] = useState(true); // 👈 Estado de carga
+  const [loading, setLoading] = useState(true); //  Estado de carga
 
   useEffect(() => {
     fetchOrdenes();
@@ -32,7 +32,7 @@ export default function AdminPanel() {
     } catch (error) {
       console.error("Error al cargar órdenes:", error);
     } finally {
-      setLoading(false); // 👈 Finaliza carga
+      setLoading(false); //  Finaliza carga
     }
   };
 

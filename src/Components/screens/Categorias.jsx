@@ -7,7 +7,8 @@ function Categorias() {
   const [categoriasData, setCategoriasData] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true); // 👈 Estado para mostrar spinner
+  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     nombre: '',
     estado: 'Habilitada',
@@ -65,6 +66,23 @@ function Categorias() {
       fetchCategorias();
     } catch (err) {
       console.error('Error al agregar categoría:', err);
+    }
+  };
+
+  const toggleEstado = async (categoria) => {
+    const nuevoEstado = categoria.estado === 'Habilitada' ? 'Inhabilitada' : 'Habilitada';
+
+    const actualizada = {
+      ...categoria,
+      estado: nuevoEstado,
+      adminId: categoria.adminId?.id || categoria.adminId
+    };
+
+    try {
+      await axios.put(`http://localhost:8080/api/categoria/${categoria.id}`, actualizada);
+      fetchCategorias();
+    } catch (error) {
+      console.error("Error al cambiar el estado:", error);
     }
   };
 
@@ -131,7 +149,6 @@ function Categorias() {
           </form>
         )}
 
-        {/* Mostrar loading mientras se cargan las categorías */}
         {loading ? (
           <div className="text-center mt-5">
             <div className="spinner-border text-danger" role="status">
@@ -161,9 +178,12 @@ function Categorias() {
                   </td>
                   <td>{categoria.nombre}</td>
                   <td>
-                    <span className={`badge ${categoria.estado === 'Habilitada' ? 'bg-success' : 'bg-secondary'}`}>
+                    <button
+                      className={`btn btn-sm ${categoria.estado === 'Habilitada' ? 'btn-outline-success' : 'btn-outline-secondary'}`}
+                      onClick={() => toggleEstado(categoria)}
+                    >
                       {categoria.estado}
-                    </span>
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -27,11 +27,7 @@ function GestionMesas() {
         }
       });
 
-      const dataConEstado = response.data.map(mesa => ({
-        ...mesa,
-        estado: mesa.capacidad > 0 ? 'Habilitada' : 'Inhabilitada'
-      }));
-      setMesasData(dataConEstado);
+      setMesasData(response.data);
     } catch (error) {
       console.error("Error al cargar mesas:", error);
     } finally {
@@ -39,10 +35,29 @@ function GestionMesas() {
     }
   };
 
-  const toggleEstado = (index) => {
-    const updated = [...mesasData];
-    updated[index].estado = updated[index].estado === 'Habilitada' ? 'Inhabilitada' : 'Habilitada';
-    setMesasData(updated);
+  const toggleEstado = async (index) => {
+    const mesa = mesasData[index];
+    const nuevoEstado = mesa.estado === 'Habilitada' ? 'Inhabilitada' : 'Habilitada';
+
+    const updatedMesa = {
+      mesa: mesa.mesa,
+      capacidad: mesa.capacidad,
+      imagen: mesa.imagen || '',
+      estado: nuevoEstado
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(`http://localhost:8080/api/mesa/${mesa.id}`, updatedMesa, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      fetchMesas(); // refrescar la lista
+    } catch (error) {
+      console.error("Error al actualizar el estado de la mesa:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -58,7 +73,8 @@ function GestionMesas() {
     const nuevaMesa = {
       mesa: formData.mesa,
       capacidad: parseInt(formData.capacidad),
-      imagen: formData.imagen || null
+      imagen: formData.imagen || '',
+      estado: 'Habilitada'
     };
 
     try {
@@ -136,7 +152,7 @@ function GestionMesas() {
             <p className="mt-2">Cargando mesas...</p>
           </div>
         ) : (
-          <table className="table table-bordered mt-4">
+          <table className="table table-bordered mt-4 text-center">
             <thead className="table-danger">
               <tr>
                 <th>Imagen</th>
